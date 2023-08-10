@@ -8,6 +8,51 @@ import time
 # Crear Archivos
 ##########################################################################################
 
+
+
+def InicializarArchivos():
+    #limpiar los datos
+    NuevosDatos = [
+        "1/10011\n",
+        "2/1000111\n",
+        "3/11\n",
+        "4/101111001101\n",
+        "5/1001111110\n",
+        "6/0\n",
+        "7/0\n",
+        "8/100111\n",
+        "9/10001\n",
+        "10/1001\n"
+    ]
+    
+    file = open("Datos/memorias.txt", "w")
+    for fila in NuevosDatos:
+        file.write(fila)
+    file.close()
+    
+    #limpiar el ac
+    nuevoAc = []
+
+    file = open("Datos/AC.txt")
+    for fila in nuevoAc:
+        file.write(fila)
+    file.close()
+    #limpiar las memorias
+
+    nuevaMemoria = ["1250/1100101\n",
+        "1251 /101000010010001000\n",
+        "1252/1100101\n",
+        "1253/11010111010\n",
+        "1254/10000001110010000\n",
+        "1255/11\n"
+    ]
+
+    file = open("Datos/memorias.txt")
+    for fila in nuevaMemoria:
+        file.write(fila)
+    file.close()
+
+
 def CrearArchivoInstrucciones():
     existe = os.path.exists("Datos/inst.txt")
     if existe:
