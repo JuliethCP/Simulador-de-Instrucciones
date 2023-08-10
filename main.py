@@ -223,6 +223,38 @@ def decimal_a_binario(decimal):
     return binario
 
 
+def Instrucciones(inst, modOp, memoria1, memoria2):
+    if inst == 1:
+        Inst1(memoria1)
+    elif inst == 2:
+        Inst2(memoria1)
+    elif inst == 3:
+        Inst3(memoria1)
+    elif inst == 4:
+        Inst4(memoria1, memoria2)
+    elif inst == 5:
+        Inst5(memoria1)
+    elif inst == 6:
+        Inst6(memoria1, memoria2)
+    elif inst == 7:
+        Inst7(memoria1)
+    elif inst == 8:
+        Inst8(memoria1)
+    elif inst == 9:
+        Inst9(memoria1)
+    elif inst == 10:
+        Inst10(memoria1, memoria2)
+    elif inst == 11:
+        Inst11(memoria1, memoria2)
+    elif inst == 12:
+        Inst12(memoria1)
+    elif inst == 13:
+        Inst13(memoria1, memoria2)
+    elif inst == 14:
+        Inst14(modOp, memoria1, memoria2)
+
+    else:
+        print("Ya no hay isntrucciones por ejecutar :)")
 
 def Operaciones():
     listaOperaciones = ObtenerOperaciones()
@@ -234,44 +266,9 @@ def Operaciones():
         memoria2 = elemento['memoria2']
         inst = Conversion(int(instruccion))
 
-        file = open("Datos/inst.txt", "r")
-        filas = file.readlines()
-        filasTemporal = []
-        for fila in filas:
-            instr = fila.split("/")
-            filasTemporal.append(instr[0])
+        Instrucciones(inst, modoOp, memoria1, memoria2 )
 
-        if inst == 1:
-            Inst1(memoria1)
-        elif inst == 2:
-            Inst2(memoria1)
-        elif inst == 3:
-            Inst3(memoria1)
-        elif inst == 4:
-            Inst4(memoria1, memoria2)
-        elif inst == 5:
-            Inst5(memoria1)
-        elif inst == 6:
-            Inst6(memoria1, memoria2)
-        elif inst == 7:
-            Inst7(memoria1)
-        elif inst == 8:
-            Inst8(memoria1)
-        elif inst == 9:
-            Inst9(memoria1)
-        elif inst == 10:
-            Inst10(memoria1, memoria2)
-        elif inst == 11:
-            Inst11(memoria1, memoria2)
-        elif inst == 12:
-            Inst12(memoria1)
-        elif inst == 13:
-            Inst13(memoria1, memoria2)
-        elif inst == 14:
-            Inst14( modoOp, memoria1, memoria2)
 
-    else:
-        print("Ya no hay isntrucciones por ejecutar :)")
     ac = ObtenerAC()  # 1100101
     ac_semilimpio = ac[0]['ac']
     ac_limpio = ac_semilimpio.replace(' ', '').replace('\n', '').replace('[{', '').replace('}]', '').replace('ac',
@@ -576,20 +573,42 @@ def Inst14(modoOp, memoria1, memoria2):
     valor_variable2 = lista2[0]['variable']
     valor_limpio2 = valor_variable2.strip().replace(' ', '').replace('\n', '')
 
-    modO = Conversion(int(modoOp))
-    lista3 = ObtenerModoOperacion(str(modO))
-    valor_modO = lista3[0]['modoOperacion']
-    valor_limpio3 = valor_modO.strip().replace(' ', '').replace('\n', '')
+    modO = Conversion(int(modoOp)) #1
 
     ac = ObtenerAC()  # 1100101
     ac_semilimpio = ac[0]['ac']
     ac_limpio = ac_semilimpio.replace(' ', '').replace('\n', '').replace('[{', '').replace('}]', '').replace('ac',
                                                                                                              '').replace(
         ':', '').replace("'", '')
-    memNueva = Conversion(int(ac_limpio)) / Conversion(int(valor_limpio))
-    print("Esta es el nuevo valor de la memoria", mem1, ' : ', memNueva, " en binario es: ",
-          decimal_a_binario(memNueva))
-    EditarMemoria(mem2, decimal_a_binario(memNueva))
+
+    if modO == 0: #=
+        if int(ac_limpio) == int(valor_limpio):
+            nuevaInst= Conversion(int(valor_limpio2))
+            Instrucciones(nuevaInst, modO, memoria1, memoria2 )
+    elif modO == 1: #>
+        if int(ac_limpio) > int(valor_limpio):
+            nuevaInst = Conversion(int(valor_limpio2))
+            Instrucciones(nuevaInst, modO, memoria1, memoria2)
+    elif modO == 2: #<
+        if int(ac_limpio) < int(valor_limpio):
+            nuevaInst = Conversion(int(valor_limpio2))
+            Instrucciones(nuevaInst, modO, memoria1, memoria2)
+    elif modO == 3: #>=
+        if int(ac_limpio) >= int(valor_limpio):
+            nuevaInst = Conversion(int(valor_limpio2))
+            Instrucciones(nuevaInst, modO, memoria1, memoria2)
+    elif modO == 4: #<=
+        if int(ac_limpio) <= int(valor_limpio):
+            nuevaInst = Conversion(int(valor_limpio2))
+            Instrucciones(nuevaInst, modO, memoria1, memoria2)
+    elif modO == 5: #!=
+        if int(ac_limpio) != int(valor_limpio):
+            nuevaInst = Conversion(int(valor_limpio2))
+            Instrucciones(nuevaInst, modO, memoria1, memoria2)
+
+    #print("Esta es el nuevo valor de la memoria", mem1, ' : ', memNueva, " en binario es: ",
+     #     decimal_a_binario(memNueva))
+
 
 while 1 == 1:
     print("----------------Bienvenido--------------")
@@ -599,7 +618,7 @@ while 1 == 1:
     CrearArchivoAC()
     CrearArchivoOperaciones()
     CrearArchivoDispositivos()
-
+  #  InicializarArchivos()
     Operaciones()
     break
 
