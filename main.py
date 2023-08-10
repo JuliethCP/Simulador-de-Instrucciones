@@ -94,6 +94,23 @@ def ObtenerMemoria(id):
     file.close()
     return filasTemporal
 
+def ObtenerModoOperacion(id):
+    CrearArchivoOperaciones()
+    file = open("Datos/operaciones.txt", "r")
+    filas = file.readlines()
+    filasTemporal = []
+
+    for fila in filas:
+        modO = fila.split("/")
+        puntero = modO[0]
+        if puntero == id:
+            modO  = fila.split("/")
+            filasTemporal.append({
+                "modoOperacion": modO[1],
+            })
+    file.close()
+    return filasTemporal
+
 def ObtenerDispositivo(id):
     CrearArchivoDispositivos()
     file = open("Datos/dispositivos.txt", "r")
@@ -119,8 +136,9 @@ def ObtenerOperaciones():
     for fila in filas:
         operaciones = fila.split("/")
         filasTemporal.append({"instruccion": operaciones[0],
-                              "memoria1": operaciones[1],
-                              "memoria2": operaciones[2],
+                              "modo-operacion": operaciones[1],
+                              "memoria1": operaciones[2],
+                              "memoria2": operaciones[3],
 
                               })
     file.close()
@@ -166,6 +184,7 @@ def Operaciones():
     print(listaOperaciones)
     for elemento in listaOperaciones:
         instruccion = elemento['instruccion']
+        modoOp = elemento['modo-operacion']
         memoria1 = elemento['memoria1']
         memoria2 = elemento['memoria2']
         inst = Conversion(int(instruccion))
@@ -203,6 +222,8 @@ def Operaciones():
             Inst12(memoria1)
         elif inst == 13:
             Inst13(memoria1, memoria2)
+        elif inst == 14:
+            Inst14( modoOp, memoria1, memoria2)
 
     else:
         print("Ya no hay isntrucciones por ejecutar :)")
@@ -357,7 +378,6 @@ def Inst5(memoria1):
 
 
 # Instrucción 6 Resta: AC – memoria 1, almacena en memoria 2
-
 def Inst6(memoria1, memoria2):
     # Resta: AC – memoria 1, almacena en memoria 2
     mem1 = Conversion(int(memoria1))  # 1252
@@ -500,13 +520,41 @@ def Inst13(memoria1, memoria2):
           decimal_a_binario (memNueva))
     EditarMemoria(mem2, decimal_a_binario(memNueva))
 
+def Inst14(modoOp, memoria1, memoria2):
+    mem1 = Conversion(int(memoria1))  # 1252
+    lista = ObtenerMemoria(str(mem1))  # 1252/ 1100101
+    valor_variable = lista[0]['variable']
+    valor_limpio = valor_variable.strip().replace(' ', '').replace('\n', '')
+
+    mem2 = Conversion(int(memoria2))  # 1252
+    lista2 = ObtenerMemoria(str(mem2))  # 1252/ 1100101
+    valor_variable2 = lista2[0]['variable']
+    valor_limpio2 = valor_variable2.strip().replace(' ', '').replace('\n', '')
+
+    modO = Conversion(int(modoOp))
+    lista3 = ObtenerModoOperacion(str(modO))
+    valor_modO = lista3[0]['modoOperacion']
+    valor_limpio3 = valor_modO.strip().replace(' ', '').replace('\n', '')
+
+    ac = ObtenerAC()  # 1100101
+    ac_semilimpio = ac[0]['ac']
+    ac_limpio = ac_semilimpio.replace(' ', '').replace('\n', '').replace('[{', '').replace('}]', '').replace('ac',
+                                                                                                             '').replace(
+        ':', '').replace("'", '')
+    memNueva = Conversion(int(ac_limpio)) / Conversion(int(valor_limpio))
+    print("Esta es el nuevo valor de la memoria", mem1, ' : ', memNueva, " en binario es: ",
+          decimal_a_binario(memNueva))
+    EditarMemoria(mem2, decimal_a_binario(memNueva))
+
 while 1 == 1:
     print("----------------Bienvenido--------------")
+
     CrearArchivoInstrucciones()
     CrearArchivoMemorias()
     CrearArchivoAC()
     CrearArchivoOperaciones()
     CrearArchivoDispositivos()
+
     Operaciones()
     break
 
